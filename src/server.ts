@@ -25,7 +25,7 @@ app.use(cors({ credentials: true, origin: ["http://localhost:3000", "https://mar
 app.use(cookieParser())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 5000;
 connectDB();
 
 const httpServer = createServer(app);
