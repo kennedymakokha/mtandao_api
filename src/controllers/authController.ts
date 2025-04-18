@@ -192,6 +192,7 @@ export const login = async (req: Request, res: Response) => {
 
             const { accessToken, refreshToken } = generateTokens(userExists);
             const decoded = jwtDecode(accessToken);
+
             res.setHeader("Set-Cookie", serialize("sessionToken", accessToken, {
                 httpOnly: false,
                 secure: process.env.NODE_ENV === "production", // Enable in production
@@ -214,17 +215,14 @@ export const login = async (req: Request, res: Response) => {
 export const session_Check = async (req: Request, res: Response) => {
     const cookies = parse(req.headers.cookie || "");
     const token = cookies.sessionToken;
-
     if (!token) {
         // NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         res.status(401).json({ message: "Unauthorized" })
         return
     };
-
     try {
-
+        
         const user: any = jwt.verify(token, process.env.JWT_SECRET ? process.env.JWT_SECRET : "your_secret_key");
-        // NextResponse.json(user);
         res.status(200).json(user);
         return
     } catch (error) {

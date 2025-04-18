@@ -1,3 +1,5 @@
+import { timeStamp } from "console";
+
 var mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
@@ -18,36 +20,11 @@ const MpesaLogsSchema = new Schema({
     type: {
         type: String
     },
-    package: {
-        type: Schema.Types.ObjectId,
-        ref: 'agent_agent_sent_packages'
-    },
-    errand_package: {
-        type: Schema.Types.ObjectId,
-        ref: 'agent_agent_sent_packages'
-    },
-    doorstep_package: {
-        type: Schema.Types.ObjectId,
-        ref: 'doorStep_delivery_packages'
-    },
-    rent_package: {
-        type: Schema.Types.ObjectId,
-        ref: 'agent_agent_sent_packages'
-    },
-    sale: {
-        type: Schema.Types.ObjectId,
-        ref: 'agent_agent_sent_packages'
-    },
+
     CheckoutRequestID: {
-
         type: String
-
     },
-    payLater: {
 
-        type: String
-
-    },
     phone_number: {
         type: String
     },
@@ -56,6 +33,11 @@ const MpesaLogsSchema = new Schema({
     },
     MpesaReceiptNumber: {
         type: String
+    },
+    status: {
+        type: String,
+        enum: ["pending", "canceled", "complete",],
+        default: "pending"
     },
     amount: {
         type: Number
@@ -67,12 +49,9 @@ const MpesaLogsSchema = new Schema({
     ResultDesc: {
         type: String
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
 
-});
+
+}, { timestamps: true });
 
 let MpesaLogs = mongoose.model('mpesalog', MpesaLogsSchema)
 export default MpesaLogs

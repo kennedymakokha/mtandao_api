@@ -1,8 +1,8 @@
 
 import { Request, Response } from "express";
-import { Predict } from "../models/prections";
+
 import Wallet from "../models/wallet";
-import Contribution from "../models/contributions";
+
 import Message from "../models/messages";
 import { decryptMessage } from "../config/encrypt";
 

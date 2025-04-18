@@ -4,6 +4,11 @@ const UserSchema = new mongoose.Schema({
   phone_number: { type: String, required: true, unique: true },
   username: { type: String, },
   activationCode: { type: String, },
+  role: {
+    type: String,
+    enum: ["superAdmin", "admin", "client",],
+    default: "client"
+  },
   activated: { type: Boolean, default: false },
   password: { type: String, required: true },
 }, { timestamps: true });

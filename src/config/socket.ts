@@ -4,83 +4,32 @@ import { MakeActivationCode } from "../utils/generate_activation";
 import { ChatMessage, Predictor } from "../types";
 import Message from "../models/messages";
 import { encryptMessage } from "./encrypt";
-import { get_wallet } from "../controllers/walletControllers";
+
 import Wallet from "../models/wallet";
 
 let io: any = null;
 let users: { [key: string]: string } = {};
 export const setupSocket = (socketInstance: any) => {
     io = socketInstance;
-    let predictors: any = []
-    let flipResult
-    let duration = 15;
-    var time: any;
-
-    ////////////////////////////////////////
-    function runGame() {
-        time = duration;
-
-        var timerInterval = setInterval(function () {
-
-            io.emit('timerUpdate', time);
-
-            if (--time < 0) {
-                ///// implement game logic
-
-                // var bet = Math.floor(Math.random() * 2) ? "heads" : "tails";
-
-                // io.emit('flipCoin', bet);   //mk
-
-
-
-                clearInterval(timerInterval);
-
-                setTimeout(function () {
-                    let flipResult
-                    let outcome = predictors.reduce((acc: any, item: any) => {
-                        acc[item.bet] = (acc[item.bet] || 0) + 1;
-                        return acc;
-                    }, { heads: 0, tails: 0 });
-                    const result = outcome.heads > outcome.tails ? "heads" : outcome.tails > outcome.heads ? "tails" : "equal";
-
-
-                    if (result === "equal" || predictors.length === 1) {
-                        flipResult = Math.random() > 0.5 ? "heads" : "tails";
-                    } else {
-                        flipResult = result === "tails" ? "heads" : result === "heads" ? "tails" : ""
-                    }
-                    io.emit('flipCoin', flipResult);
-                    console.log(predictors)
-                    console.log(flipResult, result)
-                    // console.log(bet, "the bet is")
-                    runGame();
-                }, 7 * 1000);
-
-            }
-            // console.log(time);
-            // console.log(predictors)
-
-        }, 1000);
-
-    }
-
-    runGame();
-
-
     io.on("connection", (socket: any) => {
         console.log("SOCKET CONNECTION MADE:", socket.id);
-        // io.emit('status', time);
+       
 
-        socket.on("place-bet", (data: any) => {
-            let newItem = { socketId: socket.id, bet: data.bet, userId: data.uuid }
-            const existing = predictors.find((item: Predictor) => item.socketId === socket.id);
+        socket.on('join_topic', (topic: any) => {
+            socket.join(topic);
+            console.log(`User ${socket.id} joined topic: ${topic}`);
 
-            if (existing) {
-                existing.bet = data.bet; // 🔁 Update the bet
-            } else {
-                predictors.push(newItem); // ➕ Add new entry
-            }
+            // Optional: Notify others in the room
+            socket.to(topic).emit('user_joined', {
+                message: `User ${socket.id} has joined the topic ${topic}`,
+            });
+        });
 
+        socket.on('send_message', ({ topic, message }: any) => {
+            io.to(topic).emit('receive_message', {
+                sender: socket.id,
+                message,
+            });
         });
 
         socket.on("disconnect", () => {

@@ -7,9 +7,9 @@ import { Server } from "socket.io";
 
 import { setupSocket } from './config/socket'
 import { connectDB } from "./config/db";
-import walletRoutes from './routes/walletRoutes'
+import stkRoutes from './routes/stkRoutes'
 import authRoutes from './routes/authRoutes'
-import predictRoutes from './routes/predictRoutes'
+
 import MessagesRoute from './routes/messageRoute'
 
 import SmsRoute from './routes/smsRoute'
@@ -25,7 +25,9 @@ app.use(cors({ credentials: true, origin: ["http://localhost:3000", "https://mar
 app.use(cookieParser())
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-const PORT = process.env.PORT || 5000;
+// const PORT = process.env.PORT || 5000;
+const PORT = Number(process.env.PORT);
+
 connectDB();
 
 const httpServer = createServer(app);
@@ -38,8 +40,7 @@ const io: any = new Server(httpServer, {
   },
 });
 app.use("/api/auth", authRoutes);
-app.use("/api/wallet", walletRoutes);
-app.use("/api/predictions", authenticateToken, predictRoutes);
+app.use("/api/stk", stkRoutes);
 app.use("/api/messages", authenticateToken, MessagesRoute);
 app.use("/api/sms", SmsRoute);
 app.get("/api/authenticated", authenticateToken, async (req: any, res) => {

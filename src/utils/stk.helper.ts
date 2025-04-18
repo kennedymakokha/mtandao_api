@@ -34,12 +34,11 @@ export const Mpesa_stk = async (
     amount: number,
     user?: string
 ): Promise<MpesaStkResponse> => {
-    const consumer_key = "lG11Q8UCBBeg1GyoXCoASRSZCqofhBIf";
-    const consumer_secret = "yR8U0rfCBqk2NSxC";
-    const passkey = "ed593cbe53d156b8ce4646ab2ff989220db0424c2f7602eab549ef753496f9f6"
-    const short_code = parseInt("4115395", 10);
+    const consumer_key = process.env.MPESA_CONSUMER_KEY as string;
+    const consumer_secret = process.env.MPESA_CONSUMER_SECRETE as string;
+    const passkey = process.env.MPESA_CONSUMER_PASSKEY as string;
+    const short_code = parseInt(process.env.MPESA_SHORT_CODE as string, 10);
     const timestamp = moment().format("YYYYMMDDHHmmss");
-
     const phone = validatePhone(No);
     const new_amount = parseInt(amount.toString(), 10);
 
@@ -48,7 +47,7 @@ export const Mpesa_stk = async (
     ).toString("base64")}`;
 
     const response = await axios.get<{ access_token: string }>(
-        `https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials`,
+        `${process.env.MPESA_BASE_URL}/oauth/v1/generate?grant_type=client_credentials`,
         {
             headers: {
                 Authorization: `Basic ${Buffer.from(
@@ -66,7 +65,7 @@ export const Mpesa_stk = async (
     headers.append("Authorization", `Bearer ${token}`);
 
     const fetch_response = await fetch(
-        `https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest`,
+        `${process.env.MPESA_BASE_URL}/mpesa/stkpush/v1/processrequest`,
         {
             method: "POST",
             headers,
@@ -79,16 +78,18 @@ export const Mpesa_stk = async (
                 TransactionType: "CustomerPayBillOnline",
                 Amount: new_amount,
                 PartyA: phone,
-                PartyB: 4115395,
+                PartyB: process.env.MPESA_SHORT_CODE,
                 PhoneNumber: phone,
-                CallBackURL: "https://api.marapesa.com/api/wallet/mpesa-callback",
+                CallBackURL: process.env.MPESA_CALLbACK,
                 AccountReference: "Mtadao Pack Ltd",
                 TransactionDesc: "Payment delivery of *",
+
             }),
         }
     );
 
     const data: any = await fetch_response.json();
+    
     await new MpesaLogs({
         MerchantRequestID: data.MerchantRequestID,
         CheckoutRequestID: data.CheckoutRequestID,
@@ -109,8 +110,6 @@ export const Mpesa_stk = async (
     };
 };
 
-
-
 export default Mpesa_stk;
 
 const getAccessToken = async (): Promise<string> => {
@@ -129,7 +128,7 @@ const getAccessToken = async (): Promise<string> => {
 
     return response.data.access_token;
 };
-export const sendB2C = async (req: Request | any, res: Response | any ) => {
+export const sendB2C = async (req: Request | any, res: Response | any) => {
     try {
         const token = await getAccessToken();
 
