@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { get_single_conversation } from "../controllers/messageController";
+import { get_single_conversation } from "../controllers/message.controller";
 
 
 const router = Router();

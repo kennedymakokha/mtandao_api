@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://kennedy:eAkEqFSKu7bsaz4g@joblinq.wbhmn.mongodb.net/Db_newspin?retryWrites=true&w=majority";
+const MONGO_URI = process.env.MONGO_URI || "";
 
 export const connectDB = async () => {
     try {

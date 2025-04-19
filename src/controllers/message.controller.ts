@@ -1,10 +1,9 @@
 
 import { Request, Response } from "express";
 
-import Wallet from "../models/wallet";
 
-import Message from "../models/messages";
-import { decryptMessage } from "../config/encrypt";
+import Message from "../models/messages.model";
+import { decryptMessage } from "../utils/encrypt.util";
 
 
 

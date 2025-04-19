@@ -16,7 +16,7 @@ export interface IMessage extends Document {
     message: string;
     socketId: string;
     timestamp: Date;
-    type: "user" | "system"; // Type of message (user/system)
+    type: "user" | "system";
 }
 
 export interface ISms extends Document {
@@ -28,11 +28,13 @@ export interface ISms extends Document {
     message_id: string;
     ref: "account-activation" | "password-reset"
     timestamp: Date;
-    // type: "user" | "system"; // Type of message (user/system)
+
 }
 
-export type Predictor = {
-    socketId: string;
-    bet: any;
-    userId: string;
-  };
+export type Category = {
+    category_name: string;
+    description: string;
+    state: "active" | "inactive";
+    deletedAt?: string;
+    createdBy: Types.ObjectId;
+};

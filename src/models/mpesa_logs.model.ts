@@ -53,5 +53,5 @@ const MpesaLogsSchema = new Schema({
 
 }, { timestamps: true });
 
-let MpesaLogs = mongoose.model('mpesalog', MpesaLogsSchema)
+let MpesaLogs = mongoose.model('mpesalog_tb', MpesaLogsSchema)
 export default MpesaLogs

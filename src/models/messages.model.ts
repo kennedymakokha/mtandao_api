@@ -18,6 +18,6 @@ const MessageSchema = new Schema<IMessage>({
     type: { type: String, enum: ["user", "system"], default: "user" },
 });
 MessageSchema.index({ sender: 1, receiver: 1, timestamp: 1 });
-const Message = mongoose.model<IMessage>("Message", MessageSchema);
+const Message = mongoose.model<IMessage>("message_tb", MessageSchema);
 
 export default Message;

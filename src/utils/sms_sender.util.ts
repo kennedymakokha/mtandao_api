@@ -1,5 +1,5 @@
 
-import Sms from '../models/smsLogs';
+import Sms from '../models/sms_logs.model';
 import { ISms } from '../types';
 
 export const sendTextMessage = async (message: string, phone: string, reciever: string, ref: string) => {

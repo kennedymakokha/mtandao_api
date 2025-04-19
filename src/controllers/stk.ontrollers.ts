@@ -1,9 +1,9 @@
-import { User } from "../models/user";
+import { User } from "../models/user.model";
 import { Request, Response } from "express";
-import Mpesa_stk from "../utils/stk.helper";
+import Mpesa_stk from "../utils/stk.util";
 import { getSocketIo } from "../config/socket";
-import MpesaLogs from "../models/mpesa_logs";
-import { toLocalPhoneNumber } from "../utils/simplefunctions";
+import MpesaLogs from "../models/mpesa_logs.model";
+import { toLocalPhoneNumber } from "../utils/simplefunctions.util";
 let io = getSocketIo()
 
 
@@ -91,11 +91,19 @@ export const makePayment = async (req: Request | any, res: Response | any) => {
 
 export const get_Mpesa_logs = async (req: Request | any, res: Response | any) => {
     try {
+        const { page = 1, limit = 10, sendId } = req.query;
         let user: any = await User.findOne({ _id: req.user.userId })
         let phone = toLocalPhoneNumber(user.phone_number)
-        let Logs = await MpesaLogs.find({ phone_number: phone })
+        let logs = await MpesaLogs.find({ phone_number: phone }).skip((page - 1) * limit)
+            .limit(parseInt(limit))
+            .sort({ createdAt: -1 });
+
+        const total = await MpesaLogs.countDocuments();
         res.status(200)
-            .json(Logs);
+            .json({
+                logs, page: parseInt(page),
+                totalPages: Math.ceil(total / limit)
+            });
         return
     } catch (error) {
         console.log(error);

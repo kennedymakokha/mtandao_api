@@ -7,17 +7,18 @@ import { Server } from "socket.io";
 
 import { setupSocket } from './config/socket'
 import { connectDB } from "./config/db";
-import stkRoutes from './routes/stkRoutes'
-import authRoutes from './routes/authRoutes'
+import stkRoutes from './routes/stk.routes'
+import authRoutes from './routes/auth.routes'
 
-import MessagesRoute from './routes/messageRoute'
+import MessagesRoute from './routes/message.route'
 
-import SmsRoute from './routes/smsRoute'
-import { authenticateToken } from "./middleware/authMiddleware";
+import SmsRoute from './routes/sms.route'
+import { authenticateToken } from "./middleware/auth.middleware";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import { User } from "./models/user";
+import { User } from "./models/user.model";
 import cors from 'cors'
+import { swaggerSpec, swaggerUi } from "./config/swaggerConfig";
 // dotenv.config();
 const app = express();
 
@@ -39,6 +40,7 @@ const io: any = new Server(httpServer, {
     allowedHeaders: "Content-Type,Authorization", // Allow headers
   },
 });
+
 app.use("/api/auth", authRoutes);
 app.use("/api/stk", stkRoutes);
 app.use("/api/messages", authenticateToken, MessagesRoute);
@@ -50,14 +52,15 @@ app.get("/api/authenticated", authenticateToken, async (req: any, res) => {
 app.get("/api/protected", authenticateToken, (req: any, res) => {
   res.json({ message: "This is a protected route", user: req.user });
 });
-app.get("/", (req, res) => {
-  res.send("WebSocket Server is running!");
-  return
-});
+// app.get("/", (req, res) => {
+//   res.send("WebSocket Server is running!");
+//   return
+// });
 
-
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 httpServer.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Swagger docs at http://localhost:${PORT}`);
+
 });
 
 console.log("PORT:", process.env.PORT);

@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { sendSms } from "../controllers/smsEndpoint";
+import { sendSms } from "../controllers/smsendpoint.controller";
 
 
 const router = Router();

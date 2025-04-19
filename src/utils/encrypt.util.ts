@@ -1,9 +1,8 @@
 import crypto from "crypto";
 
 const algorithm = "aes-256-cbc";
-const secretKey ="12345678901234567890123456789012"; // 32 bytes (256 bits)
+const secretKey = process.env.ENCRYPT_SECRET || "12345678901234567890123456789012"; // 32 bytes (256 bits)
 const ivLength = 16;
-
 export const encryptMessage = (text: string) => {
   const iv = crypto.randomBytes(ivLength);
   const cipher = crypto.createCipheriv(algorithm, Buffer.from(secretKey), iv);

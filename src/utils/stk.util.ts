@@ -1,7 +1,7 @@
 import fetch, { Headers } from "node-fetch";
 import axios from "axios";
 import moment from "moment";
-import MpesaLogs from "../models/mpesa_logs";
+import MpesaLogs from "../models/mpesa_logs.model";
 
 
 const validatePhone = (phone: string): string => {

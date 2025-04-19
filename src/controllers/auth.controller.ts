@@ -1,17 +1,17 @@
 import { Request, Response } from "express";
-import { User } from "../models/user";
+import { User } from "../models/user.model";
 
-import { Format_phone_number } from "../utils/simplefunctions";
+import { Format_phone_number } from "../utils/simplefunctions.util";
 import jwt from "jsonwebtoken";
 
-import { sendTextMessage } from "../utils/sms_sender";
+import { sendTextMessage } from "../utils/sms_sender.util";
 import { serialize } from "cookie";
 import bcrypt from "bcryptjs";
-import generateTokens from "../utils/generateToken";
+import generateTokens from "../utils/generatetoken.util";
 import { parse } from "cookie";
 import { jwtDecode } from "jwt-decode";
-import { MakeActivationCode } from "../utils/generate_activation";
-import { Admin } from "../models/admin";
+import { MakeActivationCode } from "../utils/generate_activation.util";
+import { Admin } from "../models/admin.model";
 
 
 // User Registration
@@ -340,9 +340,8 @@ export const admin_login = async (req: Request, res: Response) => {
 export const get_Users = async (req: Request | any, res: Response | any) => {
     try {
         const { page = 1, limit = 10, sendId } = req.query;
-        // let Cont = await Contribution.find({ user_id: req.user.userId })
         let users: any = await User.find().select(`-password ${sendId ? "" : "-_id"} -updatedAt -__v`)
-            .skip((page - 1) * limit)  // Skips (page - 1) * limit documents
+            .skip((page - 1) * limit) 
             .limit(parseInt(limit))
             .sort({ createdAt: -1 });
 

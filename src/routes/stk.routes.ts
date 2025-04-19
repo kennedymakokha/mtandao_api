@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { get_Mpesa_logs, makePayment, mpesa_callback } from "../controllers/StkControllers";
-import { authenticateToken } from "../middleware/authMiddleware";
+import { get_Mpesa_logs, makePayment, mpesa_callback } from "../controllers/stk.ontrollers";
+import { authenticateToken } from "../middleware/auth.middleware";
 
 
 const router = Router();

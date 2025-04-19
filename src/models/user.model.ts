@@ -2,8 +2,15 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 const UserSchema = new mongoose.Schema({
   phone_number: { type: String, required: true, unique: true },
+  username: { type: String, },
+  activationCode: { type: String, },
+  role: {
+    type: String,
+    enum: ["superAdmin", "admin", "client",],
+    default: "client"
+  },
+  activated: { type: Boolean, default: false },
   password: { type: String, required: true },
-  username: { type: String, default: "Admin" },
 }, { timestamps: true });
 UserSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
@@ -12,4 +19,4 @@ UserSchema.pre("save", async function (next) {
   next();
 });
 
-export const Admin = mongoose.model("admin", UserSchema);
+export const User = mongoose.model("user_tb", UserSchema);
