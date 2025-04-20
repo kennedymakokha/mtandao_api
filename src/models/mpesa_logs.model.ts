@@ -46,6 +46,10 @@ const MpesaLogsSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'user'
     },
+    vendor: {
+        type: Schema.Types.ObjectId,
+        ref: 'user'
+    },
     ResultDesc: {
         type: String
     },
