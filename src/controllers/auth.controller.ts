@@ -179,8 +179,12 @@ export const login = async (req: Request, res: Response) => {
                 { username: phone_number },
                 { phone_number: phone }
             ]
-        }).select('-password');
-
+        }).select("phone_number username role activated password");
+        console.log(userExists)
+        if (!userExists) {
+            res.status(400).json("User Not Found")
+            return
+        }
         if (!userExists.activated) {
             res.status(400).json("Kindly activate your account to continue")
             return
@@ -200,6 +204,7 @@ export const login = async (req: Request, res: Response) => {
                 path: "/",
                 maxAge: 3600, // 1 hour
             }));
+          
             res.status(200).json({ ok: true, message: "Logged in", token: accessToken, exp: decoded?.exp, user: userExists });
             return
         }
