@@ -179,7 +179,7 @@ export const login = async (req: Request, res: Response) => {
                 { username: phone_number },
                 { phone_number: phone }
             ]
-        });
+        }).select('-password');
 
         if (!userExists.activated) {
             res.status(400).json("Kindly activate your account to continue")
@@ -200,7 +200,7 @@ export const login = async (req: Request, res: Response) => {
                 path: "/",
                 maxAge: 3600, // 1 hour
             }));
-            res.status(200).json({ ok: true, message: "Logged in", token: accessToken, exp: decoded?.exp });
+            res.status(200).json({ ok: true, message: "Logged in", token: accessToken, exp: decoded?.exp, user: userExists });
             return
         }
 
@@ -221,7 +221,7 @@ export const session_Check = async (req: Request, res: Response) => {
         return
     };
     try {
-        
+
         const user: any = jwt.verify(token, process.env.JWT_SECRET ? process.env.JWT_SECRET : "your_secret_key");
         res.status(200).json(user);
         return
@@ -341,7 +341,7 @@ export const get_Users = async (req: Request | any, res: Response | any) => {
     try {
         const { page = 1, limit = 10, sendId } = req.query;
         let users: any = await User.find().select(`-password ${sendId ? "" : "-_id"} -updatedAt -__v`)
-            .skip((page - 1) * limit) 
+            .skip((page - 1) * limit)
             .limit(parseInt(limit))
             .sort({ createdAt: -1 });
 
