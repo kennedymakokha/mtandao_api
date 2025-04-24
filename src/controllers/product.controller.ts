@@ -60,9 +60,14 @@ export const Create = async (req: Request | any, res: Response): Promise<void> =
     }
 };
 export const Get = async (req: Request | any, res: Response | any) => {
+
     try {
+        let options: any = { deletedAt: null, }
+        if (req.user.role == "admin") {
+            options = { deletedAt: null, createdBy: req.user.userId }
+        }
         const { page = 1, limit = 10, sendId } = req.query;
-        const products: any = await ProductModel.find({ deletedAt: null, createdBy: req.user.userId }).skip((page - 1) * limit)
+        const products: any = await ProductModel.find(options).skip((page - 1) * limit)
             .limit(parseInt(limit))
             .sort({ createdAt: -1 })
         const total = await ProductModel.countDocuments();
