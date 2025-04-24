@@ -39,7 +39,10 @@ export const Create = async (req: Request | any, res: Response): Promise<void> =
             (file) => `${req.protocol}://${req.get("host")}/uploads/${file.filename}`
 
         );
-        console.log("res", req.body)
+        if (req.files.length < 0) {
+            res.status(400).json('Kindly upload at least four  image')
+            return
+        }
         const Exists: any = await ProductModel.findOne({ business: req.body.business, product_name: req.body.product_name });
         if (Exists) {
             res.status(400).json("product exists already Exists")
@@ -66,10 +69,11 @@ export const Get = async (req: Request | any, res: Response | any) => {
         if (req.user.role == "admin") {
             options = { deletedAt: null, createdBy: req.user.userId }
         }
-        const { page = 1, limit = 10, sendId } = req.query;
+
+        const { page = 1, limit = 10, } = req.query;
         const products: any = await ProductModel.find(options).skip((page - 1) * limit)
             .limit(parseInt(limit))
-            .sort({ createdAt: -1 })
+            .sort({ createdAt: -1 }).populate("business","location",)
         const total = await ProductModel.countDocuments();
         res.status(201).json(
             {

@@ -11,6 +11,7 @@ import categoryRoutes from './routes/category,routes'
 import messageRoute from './routes/message.route'
 import businessRoute from './routes/business.routes'
 import productRoute from './routes/product.routes'
+import townsRoute from './routes/towns.routes'
 import smsRoute from './routes/sms.route'
 import { authenticateToken } from "./middleware/auth.middleware";
 import bodyParser from "body-parser";
@@ -48,6 +49,8 @@ app.use("/api/messages", authenticateToken, messageRoute);
 app.use("/api/sms", smsRoute);
 app.use("/api/products", authenticateToken, productRoute);
 app.use("/api/categories", authenticateToken, categoryRoutes);
+app.use("/api/towns", authenticateToken, townsRoute);
+
 app.get("/api/authenticated", authenticateToken, async (req: any, res) => {
   let authuser = await User.findById(req.user.userId)
   res.json(authuser);

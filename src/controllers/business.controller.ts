@@ -9,7 +9,7 @@ import { validateBusinessInput } from "../validations/business.validations";
 
 export const Create = async (req: Request | any, res: Response) => {
     try {
-
+       
         CustomError(validateBusinessInput, req.body, res)
         const Exists: any = await Business.findOne({ Business_name: req.body.business_name });
         if (Exists) {
@@ -17,6 +17,9 @@ export const Create = async (req: Request | any, res: Response) => {
             return
         }
         req.body.createdBy = req.user.userId
+        req.body.location = {
+            lat: req.body.lat, lng: req.body.lng
+        }
         const newbusiness: any = new Business(req.body);
         const newBusiness = await newbusiness.save();
         res.status(201).json({ message: "admin added  successfully", newBusiness });
@@ -52,7 +55,7 @@ export const Get = async (req: Request | any, res: Response | any) => {
 export const Get_one = async (req: Request | any, res: Response | any) => {
     try {
         const { id } = req.query;
-        const Business_obj: any = await Business.findOne({_id: id, deletedAt: null }).populate('category')
+        const Business_obj: any = await Business.findOne({ _id: id, deletedAt: null }).populate('category')
         res.status(201).json(Business_obj);
         return;
     } catch (error) {

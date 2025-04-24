@@ -11,7 +11,7 @@ export const validateBusinessInput = (data: Business) => {
         errors.business_name = 'Name  field is required';
     }
     if (Validator.isEmpty(data.description)) {
-        errors.description = 'Name  field is required';
+        errors.description = 'Description  field is required';
     }
 
     return {
