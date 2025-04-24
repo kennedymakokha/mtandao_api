@@ -180,7 +180,7 @@ export const login = async (req: Request, res: Response) => {
                 { phone_number: phone }
             ]
         }).select("phone_number username role activated password");
-        console.log(userExists)
+      
         if (!userExists) {
             res.status(400).json("User Not Found")
             return

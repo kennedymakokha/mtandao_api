@@ -10,7 +10,7 @@ import { validateCategoryInput } from "../validations/category.validation";
 
 
 
-export const Create = async (req: Request, res: Response) => {
+export const Create = async (req: Request | any, res: Response) => {
     try {
         CustomError(validateCategoryInput, req.body, res)
         const Exists: any = await Category.findOne({ category_name: req.body.category_name });
@@ -18,6 +18,7 @@ export const Create = async (req: Request, res: Response) => {
             res.status(400).json("Category already Exists")
             return
         }
+        req.body.createdBy = req.user.userId
         const category: any = new Category(req.body);
         const newcategory = await category.save();
         res.status(201).json({ message: "admin added  successfully", newcategory });
@@ -32,13 +33,13 @@ export const Create = async (req: Request, res: Response) => {
 export const Get = async (req: Request | any, res: Response | any) => {
     try {
         const { page = 1, limit = 10, sendId } = req.query;
-        const Categories: any = await Category.find({ deletedAt: null }).skip((page - 1) * limit)
+        const categories: any = await Category.find({ deletedAt: null }).skip((page - 1) * limit)
             .limit(parseInt(limit))
             .sort({ createdAt: -1 })
         const total = await Category.countDocuments();
         res.status(201).json(
             {
-                Categories, page: parseInt(page),
+                categories, page: parseInt(page),
                 totalPages: Math.ceil(total / limit)
             }
         );

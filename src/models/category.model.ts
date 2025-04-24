@@ -12,7 +12,7 @@ const CategorySchema = new mongoose.Schema({
     enum: ["active", "inactive",],
     default: "active"
   },
-  deletedAt: { type: Date, default: Date.now }
+  deletedAt: { type: Date, default: null }
 }, { timestamps: true });
 
 

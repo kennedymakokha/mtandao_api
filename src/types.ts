@@ -30,11 +30,28 @@ export interface ISms extends Document {
     timestamp: Date;
 
 }
-
+export type Business = {
+    business_name: string;
+    description: string;
+    state: "active" | "inactive";
+    deletedAt?: string;
+    createdBy: Types.ObjectId;
+};
 export type Category = {
     category_name: string;
     description: string;
     state: "active" | "inactive";
     deletedAt?: string;
     createdBy: Types.ObjectId;
+};
+export type Product = {
+
+
+    product_name: string;
+    price: number | any;
+    business: any
+    images?: string[] | any;
+    description?: string;
+    state: "active" | "inactive";
+    deletedAt?: string;
 };
