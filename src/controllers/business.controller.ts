@@ -4,12 +4,13 @@ import { Request, Response } from "express";
 import { CustomError } from "../utils/custom_error.util";
 import { Business } from "../models/business.model";
 import { validateBusinessInput } from "../validations/business.validations";
+import { User } from "../models/user.model";
 
 
 
 export const Create = async (req: Request | any, res: Response) => {
     try {
-       
+
         CustomError(validateBusinessInput, req.body, res)
         const Exists: any = await Business.findOne({ Business_name: req.body.business_name });
         if (Exists) {
@@ -34,7 +35,13 @@ export const Create = async (req: Request | any, res: Response) => {
 export const Get = async (req: Request | any, res: Response | any) => {
     try {
         const { page = 1, limit = 10, sendId } = req.query;
-        const businessess: any = await Business.find({ deletedAt: null, createdBy: req.user.userId }).populate('category').skip((page - 1) * limit)
+        const user: any = await User.findById(req.user.userId)
+        let options: any = { deletedAt: null }
+        if (user.role === "admin") {
+            options = { deletedAt: null, createdBy: req.user.userId }
+        }
+
+        const businessess: any = await Business.find(options).populate('category').skip((page - 1) * limit)
             .limit(parseInt(limit))
             .sort({ createdAt: -1 })
         const total = await Business.countDocuments();
