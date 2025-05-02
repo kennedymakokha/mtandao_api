@@ -34,7 +34,7 @@ export const Create = async (req: Request | any, res: Response) => {
 };
 export const Get = async (req: Request | any, res: Response | any) => {
     try {
-        const { page = 1, limit = 10, sendId } = req.query;
+        const { page, limit} = req.query;
         const user: any = await User.findById(req.user.userId)
         let options: any = { deletedAt: null }
         if (user.role === "admin") {
